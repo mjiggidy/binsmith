@@ -1,12 +1,14 @@
 import avb
 import sys, pathlib, copy, typing, pathlib, enum
 
-class DisplayModes(enum.IntEnum):
+class ViewModes(enum.IntEnum):
+	"""Avid Bin View Modes"""
 	LIST   = 0
 	FRAME  = 1
 	SCRIPT = 2
 
 class BinDisplays(enum.IntFlag):
+	"""Types of data to display in the bin (from Set Bin Display... dialog)"""
 	MASTER_CLIPS               = 0b00000000000000001
 	SUBCLIPS                   = 0b00000000000000010
 	SEQUENCES                  = 0b00000000000000100
@@ -20,14 +22,16 @@ class BinDisplays(enum.IntFlag):
 	STEREOSCOPIC_CLIPS         = 0b01000000000000000
 	LINKED_MASTER_CLIPS        = 0b10000000000000000
 
+	@classmethod
+	def get_options(cls, settings:"BinDisplays") -> list["BinDisplays"]:
+		"""Return a list of individual options set in the bitmask"""
+		return [option for option in BinDisplays if option in settings]
 
 def get_binview_from_file(path_avb:str) -> avb.core.AVBPropertyData:
 	"""Copy BinView data from a given path to an AVB"""
 
 	with avb.open(path_avb) as avb_file:
-		things = [' '.join(thing.name.split('_')).title() for thing in BinDisplays if thing in BinDisplays(avb_file.content.display_mask)]
-		print(f"Using view setting \"{avb_file.content.view_setting.name}\" in {DisplayModes(avb_file.content.display_mode).name.title()} mode with bin displaying {', '.join(things) or 'nothing'}")
-		return copy.deepcopy(avb_file.content.view_setting.property_data), DisplayModes(avb_file.content.display_mode), BinDisplays(avb_file.content.display_mask)
+		return copy.deepcopy(avb_file.content.view_setting.property_data), ViewModes(avb_file.content.display_mode), BinDisplays(avb_file.content.display_mask)
 
 def copy_binview_to_avb(binview:avb.core.AVBPropertyData, avb_file:avb.file.AVBFile) -> avb.bin.BinViewSetting:
 	"""Return a new binview"""
@@ -37,9 +41,8 @@ def copy_binview_to_avb(binview:avb.core.AVBPropertyData, avb_file:avb.file.AVBF
 	view_new.attributes = avb_file.create.Attributes()
 	view_new.attributes.update(binview.get("attributes"))
 	return view_new
-	
 
-def create_bin(path_avb:str, bin_view:typing.Optional[avb.core.AVBPropertyData]=None, view_mode:typing.Optional[DisplayModes]=None, bin_display=typing.Optional[BinDisplays]):
+def create_bin(path_avb:str, bin_view:typing.Optional[avb.core.AVBPropertyData]=None, view_mode:typing.Optional[ViewModes]=None, bin_display=typing.Optional[BinDisplays]):
 	"""Create a new Avid bin at a given path with an optional BinView"""
 
 	with avb.file.AVBFile() as avb_new:
@@ -54,7 +57,7 @@ def create_bin(path_avb:str, bin_view:typing.Optional[avb.core.AVBPropertyData]=
 		
 		avb_new.write(path_avb)
 
-def main(avb_path:str, bin_view:typing.Optional[avb.core.AVBPropertyData]=None, view_mode:typing.Optional[DisplayModes]=None, bin_display=typing.Optional[BinDisplays]):
+def main(avb_path:str, bin_view:typing.Optional[avb.core.AVBPropertyData]=None, view_mode:typing.Optional[ViewModes]=None, bin_display=typing.Optional[BinDisplays]):
 	"""Create an Avid bin with a given binview"""
 
 	avb_path = pathlib.Path(avb_path).with_suffix(".avb")
@@ -63,7 +66,6 @@ def main(avb_path:str, bin_view:typing.Optional[avb.core.AVBPropertyData]=None, 
 	
 	create_bin(avb_path, bin_view, view_mode, bin_display)
 
-
 if __name__ == "__main__":
 	
 	if len(sys.argv) < 3:
@@ -71,6 +73,7 @@ if __name__ == "__main__":
 	
 	try:
 		bin_view, view_mode, bin_display = get_binview_from_file(sys.argv[1])
+		print(f"Using view setting \"{bin_view.get('name','Untitled')}\" in {view_mode.name.title()} mode with bin display options: {', '.join(' '.join(opt.name.split('_')).title() for opt in BinDisplays.get_options(bin_display))}")
 	except Exception as e:
 		sys.exit(f"Cannot read the binview from {sys.argv[1]}: {e}")
 	
