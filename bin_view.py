@@ -1,5 +1,5 @@
 import avb
-import sys, pathlib, copy, typing, pathlib, enum
+import sys, pathlib, copy, typing, pathlib, enum, argparse
 
 class ViewModes(enum.IntEnum):
 	"""Avid Bin View Modes"""
@@ -27,6 +27,14 @@ class BinDisplays(enum.IntFlag):
 	def get_options(cls, settings:"BinDisplays") -> list["BinDisplays"]:
 		"""Return a list of individual options set in the bitmask"""
 		return [option for option in BinDisplays if option in settings]
+
+def parse_arguments(argv:list[str]):
+	"""Parse the command-line arguments"""
+
+	parser = argparse.ArgumentParser(description="The fun and cool way to batch-create Avid bins.")
+	parser.add_argument("-t","--template", metavar="existing_bin_path", nargs="?", help="Optional path to an existing bin to use as a template")
+	parser.add_argument("new_bin_path", nargs='+', help="Create a new Avid bin for a given path")
+	return parser.parse_args(argv)
 
 def get_binview_from_file(path_avb:str) -> avb.core.AVBPropertyData:
 	"""Copy BinView data from a given path to an AVB"""
@@ -58,33 +66,49 @@ def create_bin(path_avb:str, bin_view:typing.Optional[avb.core.AVBPropertyData]=
 		
 		avb_new.write(path_avb)
 
-def main(avb_path:str, bin_view:typing.Optional[avb.core.AVBPropertyData]=None, view_mode:typing.Optional[ViewModes]=None, bin_display=typing.Optional[BinDisplays]):
-	"""Create an Avid bin with a given binview"""
+def resolve_path(path_bin:str, allow_existing:bool=False) -> str:
+	"""Build the final path"""
 
-	avb_path = pathlib.Path(avb_path).with_suffix(".avb")
-	if avb_path.exists():
+	# Ensure file extension is ".avb"
+	path_bin = pathlib.Path(path_bin).with_suffix(".avb")
+
+	# Ensure file does not exist
+	if not allow_existing and path_bin.exists():
 		raise FileExistsError(f"Bin already exists")
+
+	return str(path_bin)
+
+def main(paths_newbins:list[str], path_template:typing.Optional[str]=None):
+	"""Create an Avid bins with an optional template"""
+
+	bin_view    = None
+	view_mode   = None
+	bin_display = None
+
+	# Load an existing bin as a template for bin settings, if provided
+	if path_template is not None:
+		bin_view, view_mode, bin_display = get_binview_from_file(input_args.template)
+		print(f"Using view setting \"{bin_view.get('name','Untitled')}\" in {view_mode.name.title()} mode with bin display options: {', '.join(' '.join(opt.name.split('_')).title() for opt in BinDisplays.get_options(bin_display))}")
 	
-	create_bin(avb_path, bin_view, view_mode, bin_display)
+	# Create a new bin for each path provided
+	for path_newbin in paths_newbins:
+		try:
+			path_newbin = resolve_path(path_newbin)
+			create_bin(path_newbin, bin_view, view_mode, bin_display)
+		except Exception as e:
+			print(f"Skipping {path_newbin}: {e}", file=sys.stderr)
+		else:
+			print(f"Created bin at {path_newbin}")
+	
 
 if __name__ == "__main__":
 	
-	if len(sys.argv) < 3:
-		sys.exit(f"Usage: {pathlib.Path(__file__).name} path_to_binview.avb new_bin_1.avb [new_bin_2.avb ...]")
-	
+#	if len(sys.argv) < 3:
+#		sys.exit(f"Usage: {pathlib.Path(__file__).name} path_to_binview.avb new_bin_1.avb [new_bin_2.avb ...]")
+
+	input_args = parse_arguments(sys.argv[1:])
+
 	try:
-		bin_view, view_mode, bin_display = get_binview_from_file(sys.argv[1])
-		print(f"Using view setting \"{bin_view.get('name','Untitled')}\" in {view_mode.name.title()} mode with bin display options: {', '.join(' '.join(opt.name.split('_')).title() for opt in BinDisplays.get_options(bin_display))}")
+		main(paths_newbins=input_args.new_bin_path, path_template=input_args.template)
 	except Exception as e:
-		sys.exit(f"Cannot read the binview from {sys.argv[1]}: {e}")
-	
-	for avb_path in sys.argv[2:]:
-		
-		try:
-			main(avb_path, bin_view=bin_view, view_mode=view_mode, bin_display=bin_display)
-		
-		except Exception as e:
-			print(f"Skipping {avb_path}: {e}")
-		
-		else:
-			print(f"Created bin at {avb_path} with binview {bin_view.get('name','Untitled')}")
+		sys.exit(str(e))
