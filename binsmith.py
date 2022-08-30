@@ -1,3 +1,12 @@
+#!/usr/bin/env python3
+
+"""
+binsmith.py
+Create Avid bins (.avb) with custom display settings
+By Michael Jordan <michael@glowingpixel.com>
+Usage: binsmith.py path/to/newbin.avab [another.avb ...] [-t path/to/template.avb]
+"""
+
 import avb
 import sys, pathlib, copy, typing, pathlib, enum, argparse
 
