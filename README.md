@@ -8,7 +8,7 @@ python3 binsmith.py path/to/new/avid_bin.avb [and/another/bin.avb ...]
 
 ```
 
-*...or*, you can add a `--template path/to/existing/bin.avb` option to copy the view settings from an existing bin:
+You can add a `--template path/to/existing/bin.avb` option to use the view settings from an existing bin with your new bins:
 ```bash
 python3 binsmith.py path/to/new/avid_bin.avb and/another/newbin.avb --template path/to/coolbin.avb
 ```
