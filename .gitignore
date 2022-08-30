@@ -3,3 +3,5 @@ include
 lib
 pyvenv.cfg
 *.avb
+*.egg-info
+*.pyc
