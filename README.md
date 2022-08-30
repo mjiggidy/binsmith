@@ -13,6 +13,15 @@ You can add a `--template path/to/existing/bin.avb` option to use the view setti
 python3 binsmith.py path/to/new/avid_bin.avb and/another/newbin.avb --template path/to/coolbin.avb
 ```
 
+Get *really* fancy with a bash for loop:
+```bash
+for x in {1..8}; do
+  python3 binsmith.py "To Sound/Reel ${x} v12.avb" --template binviews/TurnoverView.avb;
+done;
+```
+
+That'll get you 8 bins with whatever display settings are set in your `TurnoverView.avb` bin.
+
 ## Why?
 
 This could be useful for all sorts of weird little post production needs.  For example, batch-creating new bins for a "new project" setup script, or as part of a dailies ingest workflow.  Or just for one-off bins because... I don't know about you, but *my* Avid takes *forever* to make a new bin the normal way.
