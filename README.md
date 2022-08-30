@@ -15,7 +15,7 @@ python3 binsmith.py path/to/new/avid_bin.avb and/another/newbin.avb --template p
 
 ## Why?
 
-This could be useful for all sorts of weird little post production needs.  For example, batch-creating new bins for a "new project" setup script.
+This could be useful for all sorts of weird little post production needs.  For example, batch-creating new bins for a "new project" setup script, or as part of a dailies ingest workflow.  Or just for one-off bins because... I don't know about you, but *my* Avid takes *forever* to make a new bin the normal way.
 
 ## How does it work?
 
