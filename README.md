@@ -36,3 +36,7 @@ Well, the most important part of this is the amazing [`pyavb`](https://github.co
 * Clone this repo
 * Install the dependencies (currently only [`pyavb`](https://github.com/markreidvfx/pyavb)) using the included Requirements file: `pip3 install -r requirements.txt`
 * Enjoy
+
+## You may also like
+
+* [`binlock`](https://github.com/mjiggidy/binlock) - Create lock files for Avid bins, with custom messages and an air of mystique
