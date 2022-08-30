@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
 """
-binsmith.py
+binsmith.py v1.0.1
 Create Avid bins (.avb) with custom display settings
 By Michael Jordan <michael@glowingpixel.com>
+https://github.com/mjiggidy/binsmith
+
 Usage: binsmith.py path/to/newbin.avab [another.avb ...] [-t path/to/template.avb]
 """
 
@@ -12,12 +14,14 @@ import sys, pathlib, copy, typing, pathlib, enum, argparse
 
 class ViewModes(enum.IntEnum):
 	"""Avid Bin View Modes"""
+	
 	LIST   = 0
 	FRAME  = 1
 	SCRIPT = 2
 
 class BinDisplays(enum.IntFlag):
 	"""Types of data to display in the bin (from Set Bin Display... dialog)"""
+
 	MASTER_CLIPS               = 0b00000000000000001
 	SUBCLIPS                   = 0b00000000000000010
 	SEQUENCES                  = 0b00000000000000100
@@ -35,6 +39,7 @@ class BinDisplays(enum.IntFlag):
 	@classmethod
 	def get_options(cls, settings:"BinDisplays") -> list["BinDisplays"]:
 		"""Return a list of individual options set in the bitmask"""
+
 		return [option for option in BinDisplays if option in settings]
 
 def parse_arguments(argv:list[str]):
