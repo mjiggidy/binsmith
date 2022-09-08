@@ -6,7 +6,7 @@ Create Avid bins (.avb) with custom display settings
 By Michael Jordan <michael@glowingpixel.com>
 https://github.com/mjiggidy/binsmith
 
-Usage: binsmith.py path/to/newbin.avab [another.avb ...] [-t path/to/template.avb]
+Usage: binsmith.py path/to/newbin.avb [another.avb ...] [-t path/to/template.avb]
 """
 
 import avb
