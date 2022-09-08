@@ -34,7 +34,7 @@ Well, the most important part of this is the amazing [`pyavb`](https://github.co
 
 * Ensure a reasonably up-to-date python3 environment
 * Clone this repo
-* Install the dependencies (currently only [`pyavb`](https://github.com/markreidvfx/pyavb)) using the included Requirements file: `pip3 install -r requirements.txt`
+* Install the dependencies using the included Requirements file: `pip3 install -r requirements.txt`
 * Enjoy
 
 ## You may also like
