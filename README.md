@@ -4,13 +4,13 @@
 
 It can create regular ol' Avid bins with the default settings:
 ```bash
-python3 binsmith.py path/to/new/avid_bin.avb [and/another/bin.avb ...]
+python3 binsmith.py my_new_bin.avb [another_new_bin.avb ...]
 
 ```
 
 You can add a `--template path/to/existing/bin.avb` option to use the view settings from an existing bin with your new bins:
 ```bash
-python3 binsmith.py path/to/new/avid_bin.avb and/another/newbin.avb --template path/to/coolbin.avb
+python3 binsmith.py my_new_bin.avb another_new_bin.avb --template path/to/coolbin.avb
 ```
 
 Get *really* fancy with a bash for loop:
