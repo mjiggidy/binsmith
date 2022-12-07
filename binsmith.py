@@ -10,7 +10,7 @@ https://github.com/mjiggidy/binsmith
 With pyavb from Mark Reid
 https://github.com/markreidvfx/pyavb
 
-Usage: binsmith.py path/to/newbin.avb [another.avb ...] [-t path/to/template.avb]
+Usage: binsmith.py my_new_bin.avb [another_new_bin.avb ...] [-t path/to/template.avb]
 """
 
 import avb
