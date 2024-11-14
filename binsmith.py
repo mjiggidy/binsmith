@@ -58,7 +58,8 @@ def get_binview_from_file(path_avb:str) -> avb.core.AVBPropertyData:
 	"""Copy BinView data from a given path to an AVB"""
 
 	with avb.open(path_avb) as avb_file:
-		return copy.deepcopy(avb_file.content.view_setting.property_data), ViewModes(avb_file.content.display_mode), BinDisplays(avb_file.content.display_mask)
+		# NOTE: Attempting to use AVBPropertyData.items() to deref everything -- avb.file fails deepcopy in py3.10+
+		return avb.core.AVBPropertyData(avb_file.content.view_setting.property_data.items()), ViewModes(avb_file.content.display_mode), BinDisplays(avb_file.content.display_mask)
 
 def copy_binview_to_avb(binview:avb.core.AVBPropertyData, avb_file:avb.file.AVBFile) -> avb.bin.BinViewSetting:
 	"""Return a new binview"""

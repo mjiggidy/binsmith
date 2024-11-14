@@ -1,5 +1,8 @@
-bin
-include
-lib
-pyvenv.cfg
+.gitignore
 *.avb
+
+# venv stuff
+pyvenv.cfg
+Scripts
+Lib
+venv*
