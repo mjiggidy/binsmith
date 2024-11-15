@@ -14,7 +14,7 @@ Usage: binsmith.py my_new_bin.avb [another_new_bin.avb ...] [-t path/to/template
 """
 
 import avb
-import sys, pathlib, copy, typing, pathlib, enum, argparse
+import sys, pathlib, typing, pathlib, enum, argparse
 
 class ViewModes(enum.IntEnum):
 	"""Avid Bin View Modes"""
@@ -58,7 +58,6 @@ def get_binview_from_file(path_avb:str) -> avb.core.AVBPropertyData:
 	"""Copy BinView data from a given path to an AVB"""
 
 	with avb.open(path_avb) as avb_file:
-		# NOTE: Attempting to use AVBPropertyData.items() to deref everything -- avb.file fails deepcopy in py3.10+
 		return avb.core.AVBPropertyData(avb_file.content.view_setting.property_data.items()), ViewModes(avb_file.content.display_mode), BinDisplays(avb_file.content.display_mask)
 
 def copy_binview_to_avb(binview:avb.core.AVBPropertyData, avb_file:avb.file.AVBFile) -> avb.bin.BinViewSetting:
