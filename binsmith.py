@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-binsmith.py v1.0.1
+binsmith.py v1.0.2
 Create Avid bins (.avb) with custom display settings
 
 By Michael Jordan <michael@glowingpixel.com>
